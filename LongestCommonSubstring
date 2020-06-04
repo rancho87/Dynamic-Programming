@@ -40,3 +40,54 @@ int main()
     
     return 0;
 }
+#include <iostream>
+
+using namespace std;
+
+string longestCommonSubstring(string& X,string& Y,int m,int n){
+    
+    int LCSuff[m+1][n+1]; 
+    int endingIndex=0;
+    int maxlen=0;
+    
+    
+     for (int i=0; i<=m; i++) 
+    { 
+        for (int j=0; j<=n; j++) 
+        { 
+            
+             if (i == 0 || j == 0) 
+                     LCSuff[i][j]=0;
+             else if(X[i-1]==Y[j-1])
+             {
+                     LCSuff[i][j]=LCSuff[i-1][j-1]+1;
+                     if (LCSuff[i][j] > maxlen)
+				    {
+    					maxlen = LCSuff[i][j];
+    					endingIndex = i;
+				    }
+             }
+             else
+               LCSuff[i][j]=0;
+        }
+    }
+    return X.substr(endingIndex-maxlen,maxlen);
+}
+
+
+int main()
+{
+
+    string  X = "abcdxyz";  
+    string Y = "xyzabcd"; 
+    int m=X.size();
+    int n=Y.size();
+    cout<<longestCommonSubstring(X,Y,m,n);
+    
+    return 0;
+}
+
+
+
+
+
