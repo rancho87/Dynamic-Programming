@@ -1,0 +1,31 @@
+#include <iostream>
+#include<string>
+#include <unordered_map>
+using namespace std;
+
+int minDeletionPalindrome(string X,int i, int  j, unordered_map<string,int> &lockup)
+{
+    if(i>=j)
+        return 0;
+    
+    string key= to_string(i) + "|" +to_string(j);
+    
+    if(lockup.find(key) == lockup.end()){
+    
+            if(X[i] == X[j])
+                lockup[key]= minDeletionPalindrome( X, i+1, j-1,lockup);
+            else
+                lockup[key]= 1 +min(minDeletionPalindrome( X, i+1, j,lockup),minDeletionPalindrome( X, i, j-1,lockup));
+    }
+    return lockup[key];
+}
+
+int main()
+{
+    
+    string X="ABCDCBAC";
+    int len=X.size();
+    unordered_map<string,int> lockup;
+    cout<<minDeletionPalindrome(X,0,len-1,lockup);
+    return 0;
+}
