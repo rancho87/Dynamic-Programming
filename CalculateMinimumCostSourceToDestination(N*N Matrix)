@@ -1,0 +1,43 @@
+#include <iostream>
+#include<string>
+#include <unordered_map>
+using namespace std;
+#define N 5
+
+int minCost(int cost[][N])
+{
+        int lockup[N];
+        for(int i=0;i<N;i++)
+            lockup[i]=cost[0][i];
+            
+        bool is_filled = false;
+	while (!is_filled)
+	{
+		is_filled = true;
+
+		// fill lookup[] in bottom-up manner
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (lockup[i] > lockup[j] + cost[j][i]) {
+					lockup[i] = lockup[j] + cost[j][i];
+					is_filled = false;	// mark lookup[] as NOT filled
+				}
+			}
+		}
+	}
+	return lockup[N-1];
+}
+int main()
+{
+    
+    int cost[N][N] =
+	{
+		{ 0, 25, 20, 10, 105 },
+		{ 20, 0, 15, 80, 80 },
+		{ 30, 15, 0, 70, 90 },
+		{ 10, 10, 50, 0, 100 },
+		{ 40, 50, 5, 10, 0 }
+	};
+	cout<<minCost(cost);
+    return 0;
+}
