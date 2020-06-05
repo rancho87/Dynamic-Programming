@@ -1,0 +1,150 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// Data structure to store a Job
+struct Job {
+	int start, finish, profit;
+};
+
+// Function to find the maximum profit of non-overlapping jobs using LIS
+int findMaxProfit(vector<Job>& jobs)
+{
+	// sort the jobs according to increasing order of their start time
+	sort(jobs.begin(), jobs.end(),
+		[](Job& x, Job& y) {
+			return x.start < y.start;
+		});
+
+	// get number of jobs
+	int n = jobs.size();
+
+	// maxProfit[i] stores the maximum profit of non-conflicting jobs
+	// ending at the i'th job
+	int maxProfit[n];
+
+	// consider every job
+	for (int i = 0; i < n; i++)
+	{
+		// initialize current profit to 0
+		maxProfit[i] = 0;
+
+		// consider each j less than i
+		for (int j = 0; j < i; j++)
+		{
+			// if j'th job is not conflicting with the i'th job and
+			// is leading to the maximum profit
+			if (jobs[j].finish <= jobs[i].start && maxProfit[i] < maxProfit[j])
+				maxProfit[i] = maxProfit[j];
+		}
+
+		// end the current task with i'th job
+		maxProfit[i] += jobs[i].profit;
+	}
+
+	// return the maximum profit
+	return *max_element(maxProfit, maxProfit + n);
+}
+
+int main()
+{
+	vector<Job> jobs {
+		{ 0, 6, 60 },
+		{ 5, 9, 50 },
+		{ 1, 4, 30 },
+		{ 5, 7, 30 },
+		{ 3, 5, 10 },
+		{ 7, 8, 10 }
+	};
+
+	cout << "The maximum profit is " << findMaxProfit(jobs);
+
+	return 0;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// Data structure to store a Job
+struct Job {
+	int start, finish, profit;
+};
+
+// Function to print the non-overlapping jobs involved in maximum profit
+// using LIS algorithm
+void findMaxProfitJobs(vector<Job>& jobs)
+{
+	// sort the jobs according to increasing order of their start time
+	sort(jobs.begin(), jobs.end(),
+		[](Job& x, Job& y) {
+			return x.start < y.start;
+		});
+
+	// get number of jobs
+	int n = jobs.size();
+
+	// tasks[i] stores the index of non-conflicting jobs involved in the
+	// maximum profit which ends with the i'th job
+	vector<int> tasks[n];
+
+	// maxProfit[i] stores the total profit of jobs in tasks[i]
+	int maxProfit[n];
+
+	// consider every job
+	for (int i = 0; i < n; i++)
+	{
+		// initialize current profit to 0
+		maxProfit[i] = 0;
+
+		// consider each j less than i
+		for (int j = 0; j < i; j++)
+		{
+			// update i'th job if j'th job is non-conflicting and leading to the
+			// maximum profit
+			if (jobs[j].finish <= jobs[i].start && maxProfit[i] < maxProfit[j])
+			{
+				tasks[i] = tasks[j];
+				maxProfit[i] = maxProfit[j];
+			}
+		}
+
+		// end current task with i'th job
+		tasks[i].push_back(i);
+		maxProfit[i] += jobs[i].profit;
+	}
+
+	// find index with the maximum profit
+	int index = 0;
+	for (int i = 1; i < n; i++) {
+		if (maxProfit[i] > maxProfit[index]) {
+			index = i;
+		}
+	}
+
+	cout << "The jobs involved in the maximum profit are: ";
+	for (int i: tasks[index])
+	{
+		cout << "(" << jobs[i].start << ", " << jobs[i].finish << ", "
+			 << jobs[i].profit << ") ";
+	}
+}
+
+int main()
+{
+	vector<Job> jobs {
+		{ 0, 6, 60 },
+		{ 5, 9, 50 },
+		{ 1, 4, 30 },
+		{ 5, 7, 30 },
+		{ 3, 5, 10 },
+		{ 7, 8, 10 }
+	};
+
+	findMaxProfitJobs(jobs);
+
+	return 0;
+}
